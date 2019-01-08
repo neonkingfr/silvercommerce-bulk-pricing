@@ -1,0 +1,7 @@
+---
+Name: bulkpricing
+---
+## Extensions
+SilverCommerce\OrdersAdmin\Model\LineItem:
+  extensions:
+    - SilverCommerce\BulkPricing\Extensions\BulkPricingLinieItem
