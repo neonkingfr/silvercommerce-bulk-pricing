@@ -9,7 +9,7 @@ class BulkPricingLineItem extends DataExtension
     public function onBeforeWrite()
     {
         // If Quantity has been changed
-        if ($this->owner->isChanged('Quantity')) {
+        if ($this->owner->isChanged('Quantity') || !$this->owner->ID) {
             // Check the StockItem for BulkPriceBrackets
             $product = $this->owner->findStockItem();
             $brackets = false;
