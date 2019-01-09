@@ -7,13 +7,35 @@
         </tr>
         <tr>
             <td>1+</td>
-            <td>$Price.Nice</td>
+            <td>
+                <% if $IncludesTax %>
+                    {$PriceAndTax.nice}
+                <% else %>
+                    {$Price.nice}
+                <% end_if %>
+            </td>
         </tr>
         <% loop $PricingBrackets %>
             <tr>
                 <td>{$Quantity}+</td>
-                <td>$Price.Nice</td>
+                <td>
+                    <% if $Product.IncludesTax %>
+                        {$PriceAndTax.nice}
+                    <% else %>
+                        {$Price.Nice}
+                    <% end_if %>
+                </td>
             </tr>
         <% end_loop %>
+        <% if TaxString %>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <small class="tax"> 
+                        &nbsp;{$TaxString}
+                    </small>
+                </td>
+            </tr>
+        <% end_if %>
     </table>
 <% end_if %>

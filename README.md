@@ -1,6 +1,8 @@
 # SilverCommerce Bulk Pricing Setup
 
-Adds pricing to produxcts based on the quantity in the order.
+Adds pricing to products based on the quantity in the order. Allows adding price brackets to products which alter the price when a minimum quantity is ordered.
+
+Each price bracket has a minimum quantity field and a new price field. When the item is added to an order or modified, it will find the bracket with the highest minimum that is below the current quantity and assign that price to the item in the order.
 
 ## Installation
 
