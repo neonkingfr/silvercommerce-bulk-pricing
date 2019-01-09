@@ -4,4 +4,7 @@ Name: bulkpricing
 ## Extensions
 SilverCommerce\OrdersAdmin\Model\LineItem:
   extensions:
-    - SilverCommerce\BulkPricing\Extensions\BulkPricingLinieItem
+    - SilverCommerce\BulkPricing\Extensions\BulkPricingLineItem
+SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
+  extensions:
+    - SilverCommerce\BulkPricing\Extensions\BulkPricingProduct
