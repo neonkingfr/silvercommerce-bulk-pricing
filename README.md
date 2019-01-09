@@ -1,12 +1,8 @@
-# SilverCommerce Postage Setup
+# SilverCommerce Bulk Pricing Setup
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silvercommerce/postage/badges/quality-score.png?b=1.0)](https://scrutinizer-ci.com/g/silvercommerce/postage/?branch=1.0)
-[![Build Status](https://travis-ci.org/silvercommerce/postage.svg?branch=1.0)](https://travis-ci.org/silvercommerce/postage)
+Adds pricing to produxcts based on the quantity in the order.
 
-Adds a basic postage setup to a SilverCommerce install, and allows users to
-easily add new postage types.
-
-## Instalation
+## Installation
 
 Install this via composer:
 
@@ -16,6 +12,6 @@ Not using composer? [Install composer](https://getcomposer.org/)
 
 Now run `dev/build` (either via the browser, or using sake).
 
-## More Docs
+## Configuration
 
-[View their docs](docs/en/index.md)
+A pricing table can be added in the templates via the '$PricingTable' variable. 
