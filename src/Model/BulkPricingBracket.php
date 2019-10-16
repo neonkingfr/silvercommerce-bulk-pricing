@@ -4,6 +4,7 @@ namespace SilverCommerce\BulkPricing\Model;
 
 use SilverStripe\ORM\DataObject;
 use SilverCommerce\TaxAdmin\Helpers\MathsHelper;
+use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 
 class BulkPricingBracket extends DataObject
@@ -16,7 +17,8 @@ class BulkPricingBracket extends DataObject
     ];
 
     private static $has_one = [
-        'Product' => CatalogueProduct::class
+        'Product' => CatalogueProduct::class,
+        'Group' => BulkPricingGroup::class
     ];
 
     private static $summary_fields = [

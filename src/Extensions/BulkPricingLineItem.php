@@ -9,18 +9,42 @@ class BulkPricingLineItem extends DataExtension
 {
     public function onBeforeWrite()
     {
-        // If Quantity has been changed
-        if ($this->owner->isChanged('Quantity') || !$this->owner->ID) {
-            // Check the StockItem for BulkPriceBrackets
-            $product = $this->owner->findStockItem();
-            
-            // If BulkPriceBrackets exist - ensure current Price is set correctly
-            if ($product) {
-                $this->owner->Price = $product->getBulkPrice($this->owner->Quantity);
+        $owner = $this->getOwner();
+        // Check the StockItem for BulkPriceBrackets
+        $product = $owner->FindStockItem();
+
+        // If BulkPriceBrackets exist - ensure current Price is set correctly
+        if ($product) {
+            $owner->BasePrice = $product->getBulkPrice($owner->Parent(), $owner->ID, $owner->Quantity);
+        }
+    }
+
+    public function onAfterWrite()
+    {
+        $owner = $this->getOwner();
+
+        if ($owner->isChanged('Quantity')) {
+            $parent = $owner->Parent();
+            foreach ($parent->Items() as $item) {
+                if ($item->ID != $owner->ID) {
+                    $item->write();
+                }
             }
         }
     }
 
+    public function onAfterDelete()
+    {
+        $owner = $this->getOwner();
+
+        $parent = $owner->Parent();
+        foreach ($parent->Items() as $item) {
+            if ($item->ID != $owner->ID) {
+                $item->write();
+            }
+        }
+    }
+    
     /**
      * Check if this LineItem is in a BulkPricingGroup
      *
@@ -29,10 +53,10 @@ class BulkPricingLineItem extends DataExtension
      */
     public function isInPricingGroup(BulkPricingGroup $group)
     {
-        $product = $this->FindStockItem();
+        $product = $this->getOwner()->FindStockItem();
         $group_products = $group->getValidProducts();
 
-        if ($group_products->contains($product)) {
+        if (in_array($product->ID, $group_products->column('ID'))) {
             return true;
         }
 

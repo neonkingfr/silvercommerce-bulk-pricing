@@ -60,8 +60,9 @@ class BulkPricingProduct extends DataExtension
      * @param Estimate $estimate
      * @return DBCurrency
      */
-    public function getBulkPrice($estimate)
+    public function getBulkPrice($estimate, $id, $new_qty)
     {
+
         $owner = $this->getOwner();
         $price = $owner->getBasePrice();
         
@@ -70,10 +71,20 @@ class BulkPricingProduct extends DataExtension
             $qty = 0;
             foreach ($estimate->Items() as $item) {
                 if ($item->isInPricingGroup($group)) {
-                    $qty += $item->Quantity;
+                    if ($item->ID == $id) {
+                        $qty += $new_qty;
+                    } else {
+                        $qty += $item->Quantity;
+                    }
                 }
             }
-        } elseif ($brackets = $this->owner->PricingBrackets()) {
+            $brackets = $group->Brackets()->sort('Quantity', 'ASC');
+            foreach ($brackets as $bracket) {
+                if ($bracket->Quantity <= $qty) {
+                    $price = $bracket->Price;
+                }
+            }
+        } elseif ($brackets = $this->owner->PricingBrackets()->sort('Quantity', 'ASC')) {
             $qty = 0;
             foreach ($estimate->Items() as $item) {
                 if ($item->FindStockItem() == $owner) {
@@ -81,7 +92,7 @@ class BulkPricingProduct extends DataExtension
                 }
             }
             foreach ($brackets as $bracket) {
-                if ($bracket->Quantity < $qty) {
+                if ($bracket->Quantity <= $qty) {
                     $price = $bracket->Price;
                 }
             }
