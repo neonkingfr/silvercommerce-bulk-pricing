@@ -2,10 +2,11 @@
 
 namespace SilverCommerce\BulkPricing\Model;
 
-use SilverCommerce\CatalogueAdmin\Model\CatalogueCategory;
-use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
+use SilverCommerce\CatalogueAdmin\Model\CatalogueCategory;
+use SilverCommerce\BulkPricing\Model\GroupBulkPricingBracket;
 
 class BulkPricingGroup extends DataObject
 {
@@ -21,7 +22,7 @@ class BulkPricingGroup extends DataObject
 
     private static $has_many = [
         'Products' => CatalogueProduct::class,
-        'Brackets' => BulkPricingBracket::class
+        'Brackets' => GroupBulkPricingBracket::class
     ];
 
     /**

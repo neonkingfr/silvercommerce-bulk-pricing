@@ -81,7 +81,7 @@ class BulkPricingProduct extends DataExtension
             $brackets = $group->Brackets()->sort('Quantity', 'ASC');
             foreach ($brackets as $bracket) {
                 if ($bracket->Quantity <= $qty) {
-                    $price = $bracket->Price;
+                    $price = $price - $bracket->Price;
                 }
             }
         } elseif ($brackets = $this->owner->PricingBrackets()->sort('Quantity', 'ASC')) {

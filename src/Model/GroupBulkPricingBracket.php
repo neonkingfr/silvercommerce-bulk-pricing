@@ -7,9 +7,9 @@ use SilverCommerce\TaxAdmin\Helpers\MathsHelper;
 use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 
-class BulkPricingBracket extends DataObject
+class GroupBulkPricingBracket extends DataObject
 {
-    private static $table_name = 'BulkPricingBracket';
+    private static $table_name = 'GroupBulkPricingBracket';
 
     private static $db = [
         'Quantity' => 'Int',
@@ -17,15 +17,19 @@ class BulkPricingBracket extends DataObject
     ];
 
     private static $has_one = [
-        'Product' => CatalogueProduct::class
+        'Group' => BulkPricingGroup::class
     ];
 
     private static $summary_fields = [
         'Quantity' => 'Starting Quantity',
-        'Price' => 'New Price per Unit'
+        'Price' => 'Reduce price by'
     ];
 
     private static $default_sort = [
         'Quantity' => 'ASC'
+    ];
+
+    private static $field_labels = [
+        'Price' => 'Reduce price by'
     ];
 }
