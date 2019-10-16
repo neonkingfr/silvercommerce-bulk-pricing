@@ -8,3 +8,6 @@ SilverCommerce\OrdersAdmin\Model\LineItem:
 SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
   extensions:
     - SilverCommerce\BulkPricing\Extensions\BulkPricingProduct
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - SilverCommerce\BulkPricing\Extensions\SiteConfigExtension

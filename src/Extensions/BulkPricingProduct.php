@@ -7,19 +7,23 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\Forms\GridField\GridField;
+use SilverShop\HasOneField\HasOneButtonField;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldButtonRow;
+use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
 use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverCommerce\BulkPricing\Model\BulkPricingBracket;
 use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
-use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
 use Symbiote\GridFieldExtensions\GridFieldAddNewInlineButton;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 
 class BulkPricingProduct extends DataExtension
 {
+    private static $has_one = [
+        'PricingGroup' => BulkPricingGroup::class
+    ];
+
     private static $has_many = [
         'PricingBrackets' => BulkPricingBracket::class
     ];
@@ -34,27 +38,48 @@ class BulkPricingProduct extends DataExtension
             ->addComponent(new GridFieldDeleteAction())
             ->addComponent(new GridFieldAddNewInlineButton());
 
-        $fields->addFieldToTab(
+        $fields->addFieldsToTab(
             'Root.BulkPricing',
-            GridField::create(
-                'PricingBrackets',
-                'Bulk Prices',
-                $this->owner->PricingBrackets()
-            )->setConfig($config)
+            [
+                HasOneButtonField::create(
+                    $this->getOwner(),
+                    'PricingGroup'
+                ),
+                GridField::create(
+                    'PricingBrackets',
+                    'Bulk Prices',
+                    $this->owner->PricingBrackets()
+                )->setConfig($config)
+            ]
         );
     }
 
     /**
      * fetch the correct base price based on the provided quantity
      *
-     * @param int $qty
+     * @param Estimate $estimate
      * @return DBCurrency
      */
-    public function getBulkPrice($qty)
+    public function getBulkPrice($estimate)
     {
-        $price = $this->owner->BasePrice;
-
-        if ($brackets = $this->owner->PricingBrackets()) {
+        $owner = $this->getOwner();
+        $price = $owner->getBasePrice();
+        
+        if ($owner->PricingGroupID) {
+            $group = $owner->Pricinggroup();
+            $qty = 0;
+            foreach ($estimate->Items() as $item) {
+                if ($item->isInPricingGroup($group)) {
+                    $qty += $item->Quantity;
+                }
+            }
+        } elseif ($brackets = $this->owner->PricingBrackets()) {
+            $qty = 0;
+            foreach ($estimate->Items() as $item) {
+                if ($item->FindStockItem() == $owner) {
+                    $qty = $item->Quantity;
+                }
+            }
             foreach ($brackets as $bracket) {
                 if ($bracket->Quantity < $qty) {
                     $price = $bracket->Price;
