@@ -11,3 +11,6 @@ SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - SilverCommerce\BulkPricing\Extensions\SiteConfigExtension
+SilverCommerce\ShoppingCart\Forms\AddToCartForm:
+  extensions:
+    - SilverCommerce\BulkPricing\Extensions\BulkPricingAddToCartForm
