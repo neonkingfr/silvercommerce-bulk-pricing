@@ -9,7 +9,7 @@ use SilverStripe\Forms\ToggleCompositeField;
 use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 
-class BulkSiteConfigExtension extends DataExtension
+class SiteConfigExtension extends DataExtension
 {
     public function updateCMSFields(\SilverStripe\Forms\FieldList $fields)
     {
