@@ -28,15 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverCommerce\\Postage\\": "src/",
-            "SilverCommerce\\Postage\\Tests\\": "tests/"
+            "SilverCommerce\\BulkPricing\\": "src/",
+            "SilverCommerce\\BulkPricing\\Tests\\": "tests/"
         }
     },
     "scripts": {
         "lint": "phpcs -s src/ tests/",
         "lint-clean": "phpcbf src/ tests/"
-    },
-    "suggest": {
-        "silverstripe/cms": "Add full content management support to your site"
     }
 }
