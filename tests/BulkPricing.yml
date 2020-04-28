@@ -1,0 +1,101 @@
+
+SilverCommerce\CatalogueAdmin\Model\CatalogueCategory:
+  nested_top:
+    Title: "Nested Top"
+  nested_two:
+    Title: "Nested Two"
+    Parent: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_top
+
+SilverCommerce\BulkPricing\Model\BulkPricingGroup:
+  group_product:
+    Title: "Group with Products"
+  group_cat:
+    Title: "Group with Category"
+    Category: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_top
+
+SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
+  product_one:
+    Title: "Product One"
+    StockID: "PRONE"
+    BasePrice: 5
+  product_two:
+    Title: "Product Two"
+    StockID: "PRTWO"
+    BasePrice: 10
+    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_product
+  product_three:
+    Title: "Product Three"
+    StockID: "PRTHREE"
+    BasePrice: 15
+    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
+    Categories: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_top
+  product_four:
+    Title: "Product Four"
+    StockID: "PRFOUR"
+    BasePrice: 20
+    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
+    Categories: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_two
+
+SilverCommerce\BulkPricing\Model\BulkPricingBracket:
+  product_one_bk_one:
+    MinQTY: 5
+    MaxQTY: 9
+    Price: 4
+    Reduce: 0
+    Product: =>SilverCommerce\CatalogueAdmin\Model\CatalogueProduct.product_one
+  product_one_bk_two:
+    MinQTY: 10
+    MaxQTY: 14
+    Price: 3
+    Reduce: 0
+    Product: =>SilverCommerce\CatalogueAdmin\Model\CatalogueProduct.product_one
+  group_one_bk_one:
+    MinQTY: 5
+    MaxQTY: 9
+    Price: 1
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_product
+  group_one_bk_two:
+    MinQTY: 10
+    MaxQTY: 14
+    Price: 2
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_product
+  cat_one_bk_one:
+    MinQTY: 5
+    MaxQTY: 9
+    Price: 4
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
+  cat_one_bk_two:
+    MinQTY: 10
+    MaxQTY: 14
+    Price: 6
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
+
+SilverCommerce\OrdersAdmin\Model\LineItem:
+  line_item_one:
+      Title: "Product One"
+      BasePrice: 5
+      Quantity: 1
+      StockID: "PRONE"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+  line_item_two:
+      Title: "Product Two"
+      BasePrice: 10
+      Quantity: 1
+      StockID: "PRTWO"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+  line_item_three:
+      Title: "Product Three"
+      BasePrice: 15
+      Quantity: 1
+      StockID: "PRTHREE"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+  line_item_four:
+      Title: "Product Four"
+      BasePrice: 20
+      Quantity: 1
+      StockID: "PRFOUR"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
