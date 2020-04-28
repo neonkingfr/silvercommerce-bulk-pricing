@@ -4,8 +4,6 @@ namespace SilverCommerce\BulkPricing\Model;
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBCurrency;
-use SilverCommerce\TaxAdmin\Helpers\MathsHelper;
-use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 
 class BulkPricingBracket extends DataObject
@@ -13,22 +11,44 @@ class BulkPricingBracket extends DataObject
     private static $table_name = 'BulkPricingBracket';
 
     private static $db = [
-        'Quantity' => 'Int',
-        'Price' => 'Currency'
+        'Quantity' => 'Int', // Legacy, will be removed
+        'MinQTY' => 'Int',
+        'MaxQTY' => 'Int',
+        'Price' => 'Currency',
+        'Reduce' => 'Boolean'
     ];
 
     private static $has_one = [
-        'Product' => CatalogueProduct::class
+        'Product' => CatalogueProduct::class,
+        'Group' => BulkPricingGroup::class
     ];
 
     private static $summary_fields = [
-        'Quantity' => 'Starting Quantity',
-        'Price' => 'New Price per Unit'
+        'MinQTY',
+        'MaxQTY',
+        'Price',
+        'Reduce'
+    ];
+
+    private static $field_labels = [
+        'Reduce' => 'Reduce Product Price?'
     ];
 
     private static $default_sort = [
-        'Quantity' => 'ASC'
+        'MinQTY' => 'ASC'
     ];
+
+    /**
+     * Modify a provided price based on the current bracket settings
+     *
+     * @param float $price
+     *
+     * @return float
+     */
+    public function modifyPrice(float $price)
+    {
+        return ($this->Reduce) ? $price - $this->Price : $this->Price;
+    }
 
     /**
      * Get the Total price and tax

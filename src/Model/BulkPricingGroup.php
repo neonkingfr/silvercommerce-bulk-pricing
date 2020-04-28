@@ -2,12 +2,16 @@
 
 namespace SilverCommerce\BulkPricing\Model;
 
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverCommerce\BulkPricing\Model\BulkPricingBracket;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueCategory;
 use SilverCommerce\BulkPricing\Model\GroupBulkPricingBracket;
 
+/**
+ * @method CatalogueCategory Category
+ * @method \SilverStripe\ORM\HasManyList PricingBrackets
+ */
 class BulkPricingGroup extends DataObject
 {
     private static $table_name = 'BulkPricingGroup';
@@ -22,27 +26,23 @@ class BulkPricingGroup extends DataObject
 
     private static $has_many = [
         'Products' => CatalogueProduct::class,
-        'Brackets' => GroupBulkPricingBracket::class
+        'PricingBrackets' => BulkPricingBracket::class,
+        'Brackets' => GroupBulkPricingBracket::class // Legacy, soon to be removed
     ];
 
     /**
      * Compile full list of products in this group
      *
-     * @return ArrayList
+     * @return \SilverStripe\ORM\SS_List
      */
     public function getValidProducts()
     {
-        $products = ArrayList::create();
+        $ids = array_merge(
+            $this->Products()->column("ID"),
+            $this->Category()->AllProducts()->column('ID')
+        );
 
-        foreach ($this->Products() as $product) {
-            $products->add($product);
-        }
-
-        if ($this->CategoryID && $category = $this->Category()) {
-            foreach ($category->Products() as $product) {
-                $products->add($product);
-            }
-        }
+        $products = CatalogueProduct::get()->filter("ID", $ids);
 
         return $products;
     }
