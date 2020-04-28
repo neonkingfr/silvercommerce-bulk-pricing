@@ -3,10 +3,11 @@
 namespace SilverCommerce\BulkPricing\Model;
 
 use SilverStripe\ORM\DataObject;
-use SilverCommerce\TaxAdmin\Helpers\MathsHelper;
 use SilverCommerce\BulkPricing\Model\BulkPricingGroup;
-use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 
+/**
+ * @depreciated all bulk prices will now be a type of BulkPricingBracket
+ */
 class GroupBulkPricingBracket extends DataObject
 {
     private static $table_name = 'GroupBulkPricingBracket';
