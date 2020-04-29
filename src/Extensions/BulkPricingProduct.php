@@ -68,7 +68,6 @@ class BulkPricingProduct extends DataExtension
     public function getValidPricingBrackets($qty = null)
     {
         $filter = [];
-        $brackets = null;
         $owner = $this->getOwner();
 
         if (is_int($qty)) {
@@ -83,34 +82,21 @@ class BulkPricingProduct extends DataExtension
             $brackets = $owner->PricingBrackets();
         }
 
-        // If no direct prices assigned, first look via a group
-        if (!$brackets->exists()) {
-            if (count($filter)) {
-                $brackets = $owner->PricingGroup()->PricingBrackets()->filter($filter);
-            } else {
-                $brackets = $owner->PricingGroup()->PricingBrackets();
-            }
+        // If brackets are available, return
+        if (!empty($brackets) && $brackets->exists()) {
+            return $brackets;
         }
 
-        // Finally, if no prices from group, look for groups from categories
-        if (!$brackets->exists()) {
-            $categories = $owner->Categories();
-            $category_ids = [];
+        /**
+         * If no brackets found, try to get a group and check brackets from there
+         *
+         * @var BulkPricingGroup
+         */
+        $group = $this->getOwner()->getPricingGroup();
 
-            foreach ($categories as $category) {
-                $category_ids = array_merge(
-                    $category_ids,
-                    $category->getAncestors(true)->column('ID')
-                );
-            }
-
-            if (count($category_ids)) {
-                $filter['Group.Category.ID'] = $category_ids;
-            }
-
-            if (count($filter)) {
-                $brackets = BulkPricingBracket::get()->filter($filter);
-            }
+        if ($group->exists()) {
+            $filter['Group.ID'] = $group->ID;
+            $brackets = BulkPricingBracket::get()->filter($filter);
         }
 
         if (empty($brackets)) {
@@ -121,6 +107,47 @@ class BulkPricingProduct extends DataExtension
     }
 
     /**
+     * Look for a pricing group for this product, either directly or via an
+     * attached category.
+     *
+     * @return BulkPricingGroup
+     */
+    public function getPricingGroup()
+    {
+        $owner = $this->getOwner();
+        
+        // First try and get a group directly
+        $group = $owner->PricingGroup();
+
+        if ($group->exists()) {
+            return $group;
+        }
+
+        // If no direct group, try to find one from categories
+        $categories = $owner->Categories();
+        $category_ids = [];
+
+        foreach ($categories as $category) {
+            $category_ids = array_merge(
+                $category_ids,
+                $category->getAncestors(true)->column('ID')
+            );
+        }
+
+        if (count($category_ids)) {
+            $group = BulkPricingGroup::get()->find("Category.ID", $category_ids);
+        }
+
+        // If group is empty, setup a non existing one
+        if (empty($group)) {
+            $group = BulkPricingGroup::create();
+            $group->ID = -1;
+        }
+
+        return $group;
+    }
+
+    /**
      * Fetch the correct base price based on the provided quantity.
      *
      * This method follows a priority system, directly assigned prices
@@ -128,6 +155,7 @@ class BulkPricingProduct extends DataExtension
      * linked via a category
      *
      * @param int $qty
+     * @param \SilverCommerce\OrdersAdmin\Model\Estimate $estimate
      *
      * @return float
      */
@@ -143,7 +171,7 @@ class BulkPricingProduct extends DataExtension
             $price = $bracket->modifyPrice($price);
         }
 
-        return $price;
+        return (float) $price;
     }
 
     /**
