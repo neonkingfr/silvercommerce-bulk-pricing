@@ -6,9 +6,23 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
 
+/**
+ * @method BulkPricingGroup Group
+ * @method CatalogueProduct Product
+ */
 class BulkPricingBracket extends DataObject
 {
     private static $table_name = 'BulkPricingBracket';
+
+    /**
+     * Should bulk pricing brackets allow negative numbers?
+     * Defaults to false, if a negative number appears, it is
+     * set to 0
+     *
+     * @var boolean
+     * @config
+     */
+    private static $allow_negative = false;
 
     private static $db = [
         'Quantity' => 'Int', // Legacy, will be removed
@@ -47,7 +61,14 @@ class BulkPricingBracket extends DataObject
      */
     public function modifyPrice(float $price)
     {
-        return ($this->Reduce) ? $price - $this->Price : $this->Price;
+        $allow_negative = $this->config()->allow_negative;
+        $price = ($this->Reduce) ? $price - $this->Price : $this->Price;
+
+        if (!$allow_negative && $price < 0) {
+            return 0;
+        } else {
+            return $price;
+        }
     }
 
     /**
