@@ -12,6 +12,9 @@ SilverCommerce\BulkPricing\Model\BulkPricingGroup:
   group_cat:
     Title: "Group with Category"
     Category: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_top
+  group_pricing:
+    Title: "Grouped Pricing"
+    GroupedPricing: true
 
 SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
   product_one:
@@ -27,14 +30,22 @@ SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
     Title: "Product Three"
     StockID: "PRTHREE"
     BasePrice: 15
-    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
     Categories: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_top
   product_four:
     Title: "Product Four"
     StockID: "PRFOUR"
     BasePrice: 20
-    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
     Categories: =>SilverCommerce\CatalogueAdmin\Model\CatalogueCategory.nested_two
+  product_five:
+    Title: "Product Five"
+    StockID: "PRFIVE"
+    BasePrice: 12
+    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_pricing
+  product_six:
+    Title: "Product Six"
+    StockID: "PRSIX"
+    BasePrice: 18
+    PricingGroup: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_pricing
 
 SilverCommerce\BulkPricing\Model\BulkPricingBracket:
   product_one_bk_one:
@@ -73,6 +84,18 @@ SilverCommerce\BulkPricing\Model\BulkPricingBracket:
     Price: 6
     Reduce: 1
     Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_cat
+  pricing_one:
+    MinQTY: 4
+    MaxQTY: 7
+    Price: 1
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_pricing
+  pricing_two:
+    MinQTY: 8
+    MaxQTY: 12
+    Price: 2
+    Reduce: 1
+    Group: =>SilverCommerce\BulkPricing\Model\BulkPricingGroup.group_pricing
 
 SilverCommerce\OrdersAdmin\Model\LineItem:
   line_item_one:
@@ -99,3 +122,20 @@ SilverCommerce\OrdersAdmin\Model\LineItem:
       Quantity: 1
       StockID: "PRFOUR"
       ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+  line_item_five:
+      Title: "Product Five"
+      BasePrice: 12
+      Quantity: 1
+      StockID: "PRFIVE"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+  line_item_six:
+      Title: "Product Six"
+      BasePrice: 18
+      Quantity: 1
+      StockID: "PRSIX"
+      ProductClass: "SilverCommerce\\CatalogueAdmin\\Model\\CatalogueProduct"
+
+SilverCommerce\OrdersAdmin\Model\Estimate:
+  estimate_one:
+    Ref: 1234
+    Items: =>SilverCommerce\OrdersAdmin\Model\LineItem.line_item_five,=>SilverCommerce\OrdersAdmin\Model\LineItem.line_item_six

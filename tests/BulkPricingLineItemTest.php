@@ -161,4 +161,56 @@ class BulkPricingLineItemTest extends SapphireTest
         $item->write();
         $this->assertEquals(20, $item->getBasePrice());
     }
+
+    public function testOnBeforeWriteGroupPricing()
+    {
+        $item_five = $this->objFromFixture(LineItem::class, 'line_item_five');
+        $item_six = $this->objFromFixture(LineItem::class, 'line_item_six');
+
+        $this->assertEquals(12, $item_five->getBasePrice());
+        $this->assertEquals(18, $item_six->getBasePrice());
+
+        // Incrementing $item_three should also reduve price of $item_four
+        $item_five->Quantity = 2;
+        $item_five->write();
+        // Re-access item six from DB
+        $item_six = LineItem::get()->byID($item_six->ID);
+        $this->assertEquals(12, $item_five->getBasePrice());
+        $this->assertEquals(18, $item_six->getBasePrice());
+
+        $item_six->Quantity = 2;
+        $item_six->write();
+        // Re-access item five from DB
+        $item_five = LineItem::get()->byID($item_five->ID);
+        $this->assertEquals(11, $item_five->getBasePrice());
+        $this->assertEquals(17, $item_six->getBasePrice());
+
+        $item_five->Quantity = 4;
+        $item_five->write();
+        // Re-access item six from DB
+        $item_six = LineItem::get()->byID($item_six->ID);
+        $this->assertEquals(11, $item_five->getBasePrice());
+        $this->assertEquals(17, $item_six->getBasePrice());
+
+        $item_five->Quantity = 7;
+        $item_five->write();
+        // Re-access item six from DB
+        $item_six = LineItem::get()->byID($item_six->ID);
+        $this->assertEquals(10, $item_five->getBasePrice());
+        $this->assertEquals(16, $item_six->getBasePrice());
+
+        $item_five->Quantity = 2;
+        $item_five->write();
+        // Re-access item six from DB
+        $item_six = LineItem::get()->byID($item_six->ID);
+        $this->assertEquals(11, $item_five->getBasePrice());
+        $this->assertEquals(17, $item_six->getBasePrice());
+
+        $item_six->Quantity = 1;
+        $item_six->write();
+        // Re-access item five from DB
+        $item_five = LineItem::get()->byID($item_five->ID);
+        $this->assertEquals(12, $item_five->getBasePrice());
+        $this->assertEquals(18, $item_six->getBasePrice());
+    }
 }
