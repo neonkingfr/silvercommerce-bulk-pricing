@@ -31,6 +31,16 @@ class BulkPricingProduct extends DataExtension
         'PricingBrackets' => BulkPricingBracket::class
     ];
 
+    private static $casting = [
+        'PricingBracketsList' => 'Text'
+    ];
+
+    public function updateExportFields(&$fields)
+    {
+        $fields['PricingGroupID'] = 'PricingGroupID';
+        $fields['PricingBracketsList'] = 'PricingBracketsList';
+    }
+
     public function updateCMSFields(FieldList $fields)
     {
         $config = GridFieldConfig::create()
@@ -57,6 +67,23 @@ class BulkPricingProduct extends DataExtension
         );
 
         $fields->removeByName('PricingBrackets');
+    }
+
+    /**
+     * Generate a list of directly attached pricing brackets to this product
+     */
+    public function getPricingBracketsList()
+    {
+        $items = [];
+        foreach ($this->getOwner()->PricingBrackets() as $bracket) {
+            $string = "MinQTY:" . $bracket->MinQTY . ";";
+            $string .= "MaxQTY:" . $bracket->MaxQTY . ";";
+            $string .= "Price:" . $bracket->Price . ";";
+            $string .= "Reduce:" . $bracket->Reduce;
+            $items[] = $string;
+        }
+
+        return implode(', ', $items);
     }
 
     /**

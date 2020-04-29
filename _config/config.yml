@@ -1,5 +1,6 @@
 ---
 Name: bulkpricing
+After: '#catalogueconfig'
 ---
 ## Extensions
 SilverCommerce\OrdersAdmin\Model\LineItem:
@@ -14,3 +15,6 @@ SilverStripe\SiteConfig\SiteConfig:
 SilverCommerce\ShoppingCart\Forms\AddToCartForm:
   extensions:
     - SilverCommerce\BulkPricing\Extensions\BulkPricingAddToCartForm
+SilverCommerce\CatalogueAdmin\Import\ProductCSVBulkLoader:
+  extensions:
+    - SilverCommerce\BulkPricing\Extensions\BulkPricingProductImport
