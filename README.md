@@ -31,8 +31,14 @@ If you have a lot of products with the same price adjustments, you can create a 
 The `BulkPricingGroup` can then be linked to products and all linked products will follow the pricing
 brackets.
 
-Finally, you can also link a `BulkPricingGroup` to a Product Category. If you do this, all products in
+You can also link a `BulkPricingGroup` to a Product Category. If you do this, all products in
 the slected categoy (AND its children) will have the pricing rules applied.
+
+#### Pricing Bands for ALL products in a group
+
+If you want all products in a group to apply for custom pricing (EG: you have 3 of Product X and 2 of Product Y),
+You have to tick the 'Apply Pricing To Any Combination Of Products In Group' checkbox, otherwise bulk pricing
+will only be applied to individual products in the group. 
 
 NOTE: It is important to keep track of `BulkPricingGroup`'s applied to Products and Categories. You can
 get odd results if you accidentaly link multiple groups to the same product.
