@@ -120,14 +120,17 @@ class BulkPricingProduct extends DataExtension
          * @var BulkPricingGroup
          */
         $group = $this->getOwner()->getPricingGroup();
+        $brackets = ArrayList::create();
 
         if ($group->exists()) {
             $filter['Group.ID'] = $group->ID;
-            $brackets = BulkPricingBracket::get()->filter($filter);
-        }
+            $list = BulkPricingBracket::get()->filter($filter);
 
-        if (empty($brackets)) {
-            $brackets = ArrayList::create();
+            // Attach products to the list as temp products
+            foreach ($list as $bracket) {
+                $bracket->setTempProduct($this->getOwner());
+                $brackets->add($bracket);
+            }
         }
 
         return $brackets;
@@ -208,8 +211,11 @@ class BulkPricingProduct extends DataExtension
      */
     public function getPricingTable()
     {
-        return $this->getOwner()->renderWith(
-            'ilateral\\SilverStripe\\BulkPricing\\Includes\\PricingTable'
-        );
+        return $this
+            ->getOwner()
+            ->renderWith(
+                'SilverCommerce\\BulkPricing\\Includes\\PricingTable',
+                ['Product' => $this->getOwner()]
+            );
     }
 }
