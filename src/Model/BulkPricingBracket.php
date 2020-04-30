@@ -3,8 +3,11 @@
 namespace SilverCommerce\BulkPricing\Model;
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverCommerce\CatalogueAdmin\Model\CatalogueProduct;
+use SilverCommerce\BulkPricing\Tasks\MigrateLegacyBracketsTask;
 
 /**
  * @method BulkPricingGroup Group
@@ -51,6 +54,18 @@ class BulkPricingBracket extends DataObject
     private static $default_sort = [
         'MinQTY' => 'ASC'
     ];
+
+    public function requireDefaultRecords()
+    {
+        parent::requireDefaultRecords();
+
+        $run_migration = MigrateLegacyBracketsTask::config()->run_during_dev_build;
+
+        if ($run_migration) {
+            $request = Injector::inst()->get(HTTPRequest::class);
+            MigrateLegacyBracketsTask::create()->run($request);
+        }
+    }
 
     /**
      * Modify a provided price based on the current bracket settings

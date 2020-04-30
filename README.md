@@ -2,6 +2,9 @@
 
 Adds custom pricing to products based on the quantity of products added to an order.
 
+*NOTE* v2 of this module heavily re-writes v1. There is a migration script that migrates data from v1,
+but it is advised that you double check your pricing brackets before upgrading a live site. 
+
 ## Installation
 
 Install this via composer:
@@ -49,4 +52,3 @@ This module also includes a pricing table can be added to a product template. To
 the following variable to your templates
 
     $PricingTable 
-
