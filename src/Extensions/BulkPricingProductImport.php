@@ -9,9 +9,12 @@ class BulkPricingProductImport extends Extension
 {
     public function onAfterProcess($object, $record, $columnMap, $results, $preview)
     {
-        if (!empty($object) && isset($record['PricingBracketsList'])) {
+        if (!empty($object) && isset($record['PricingBracketsList']) && !empty($record['PricingBracketsList'])) {
             $items = explode(',', $record['PricingBracketsList']);
-            $object->PricingBrackets()->removeAll();
+
+            foreach ($object->PricingBrackets() as $bracket) {
+                $bracket->delete();
+            }
 
             foreach ($items as $item) {
                 $bracket = BulkPricingBracket::create();
