@@ -14,12 +14,13 @@ class BulkPricingLineItem extends DataExtension
      */
     public function onBeforeWrite()
     {
+        /** @var LineItem */
         $owner = $this->getOwner();
 
         // Check the StockItem for BulkPriceBrackets
         $product = $owner->FindStockItem();
 
-        if (empty($product)) {
+        if (empty($product) || !$product->hasMethod('getBulkPrice')) {
             return;
         }
 
